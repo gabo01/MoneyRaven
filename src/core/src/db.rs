@@ -1,9 +1,9 @@
-use uuid;
+use uuid::Uuid;
 use serde::{Serialize, Deserialize, Serializer, Deserializer};
 use std::marker::PhantomData;
 
 pub struct DBId<T> {
-    id: uuid::Bytes,
+    id: Uuid,
     marker: PhantomData<T>
 }
 
@@ -16,7 +16,7 @@ impl<T> Serialize for DBId<T> {
 impl<'de, T> Deserialize<'de> for DBId<T> {
     fn deserialize<D: Deserializer<'de>>(de: D) -> std::result::Result<Self, D::Error> {
         Ok(Self {
-            id: uuid::Bytes::deserialize(de)?,
+            id: Uuid::deserialize(de)?,
             marker: PhantomData
         })
     }

@@ -5,4 +5,7 @@ authors = ["Gabriel Dos Ramos Albo <dosramosgabriel@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+clap = "2.33.3"
 raven-core = { path = "src/core"}
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.5.8"

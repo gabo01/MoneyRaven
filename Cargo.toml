@@ -5,3 +5,4 @@ authors = ["Gabriel Dos Ramos Albo <dosramosgabriel@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+raven-core = { path = "src/core"}

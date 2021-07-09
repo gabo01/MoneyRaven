@@ -13,7 +13,13 @@ impl Commands {
     pub fn run(self, config: &mut AppConfig) {
         match self {
             Commands::CreateAccount(path) => {
-                //TODO: Create the database
+                let mut db = match ravenlib::Database::create(&path) {
+                    Ok(db) => db,
+                    Err(_err) => {
+                        eprintln!("Unable to create the database");
+                        return;
+                    }
+                };
                 config.set_db_path(path);
                 if let Err(_err) = config.save() {
                     eprintln!("Unable to save the new configuration file");

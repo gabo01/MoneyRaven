@@ -45,6 +45,7 @@ impl AppConfig {
     }
 
     pub fn save(&self) -> Result<(), SaveError> {
+        self.create_ancestor_path()?;
         Ok(fs::write(
             &self.filepath,
             toml::to_string_pretty(&self.config)?,
@@ -53,6 +54,15 @@ impl AppConfig {
 
     pub fn set_db_path<P: Into<PathBuf>>(&mut self, db_path: P) {
         self.config.dbpath = Some(db_path.into())
+    }
+
+    fn create_ancestor_path(&self) -> io::Result<()> {
+        if let Some(parent) = self.filepath.parent() {
+            if !parent.exists() {
+                fs::create_dir_all(parent)?;
+            }
+        }
+        Ok(())
     }
 }
 
@@ -105,7 +115,11 @@ impl From<toml::ser::Error> for SaveError {
 }
 
 impl Display for SaveError {
-    fn fmt(&self, _fmt: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
-        todo!()
+    fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
+        let message = match self {
+            Self::ParseError(_) => format!("The application was unable to generate the config file contents"),
+            Self::IOError(err) => format!("The following I/O error was found while trying to save the config contents: {}", err)
+        };
+        write!(fmt, "{}", message)
     }
 }

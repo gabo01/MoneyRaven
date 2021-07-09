@@ -1,7 +1,6 @@
-use clap::{App, Arg, SubCommand};
+use clap::{App, AppSettings, Arg, SubCommand};
 
 pub const CONFIG_ARG: &str = "config";
-
 
 pub mod account {
     pub const ACCOUNT_COMMAND: &str = "account-create";
@@ -10,6 +9,7 @@ pub mod account {
 
 pub fn build() -> App<'static, 'static> {
     App::new("MoneyRaven")
+        .setting(AppSettings::SubcommandRequiredElseHelp)
         .version("1.0")
         .about("MoneyRaven is an accounting utility designed for personal finances")
         .arg(
@@ -18,8 +18,7 @@ pub fn build() -> App<'static, 'static> {
                 .long("config")
                 .help("Allows to specify a custom config file"),
         )
-        .subcommand(
-            SubCommand::with_name(account::ACCOUNT_COMMAND)
-                .arg(Arg::with_name(account::PATH_ARG).help("Specifies the path to create the database")),
-        )
+        .subcommand(SubCommand::with_name(account::ACCOUNT_COMMAND).arg(
+            Arg::with_name(account::PATH_ARG).help("Specifies the path to create the database"),
+        ))
 }

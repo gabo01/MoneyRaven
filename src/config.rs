@@ -31,11 +31,16 @@ pub struct AppConfig {
 
 impl AppConfig {
     fn from_file(filepath: PathBuf) -> Result<Self, BuildError> {
-        let file_contents = fs::read_to_string(&filepath).map_err(|err| BuildError::IOError {
-            file: filepath.display().to_string(),
-            error: err,
-        })?;
-        let config = toml::from_str(&file_contents)?;
+        let config = match fs::read_to_string(&filepath) {
+            Ok(contents) => toml::from_str(&contents)?,
+            Err(err) if err.kind() == io::ErrorKind::NotFound => Config::default(),
+            Err(err) => {
+                return Err(BuildError::IOError {
+                    file: filepath.display().to_string(),
+                    error: err,
+                })
+            }
+        };
         Ok(Self { filepath, config })
     }
 
@@ -51,7 +56,7 @@ impl AppConfig {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Default)]
 struct Config {
     dbpath: Option<PathBuf>,
 }

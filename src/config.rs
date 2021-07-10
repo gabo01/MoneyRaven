@@ -110,8 +110,13 @@ impl From<toml::ser::Error> for SaveError {
 impl Display for SaveError {
     fn fmt(&self, fmt: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         let message = match self {
-            Self::ParseError(_) => format!("The application was unable to generate the config file contents"),
-            Self::IOError(err) => format!("The following I/O error was found while trying to save the config contents: {}", err)
+            Self::ParseError(_) => {
+                format!("The application was unable to generate the config file contents")
+            }
+            Self::IOError(err) => format!(
+                "The following I/O error was found while trying to save the config contents: {}",
+                err
+            ),
         };
         write!(fmt, "{}", message)
     }

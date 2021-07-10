@@ -21,8 +21,11 @@ impl Commands {
                     }
                 };
                 config.set_db_path(path);
-                if let Err(_err) = config.save() {
-                    eprintln!("Unable to save the new configuration file");
+                if let Err(err) = config.save() {
+                    eprintln!(
+                        "Unable to save the new configuration file. The error found was {}",
+                        err
+                    );
                 }
             }
         }

@@ -2,11 +2,9 @@ use clap::{App, AppSettings, Arg, SubCommand};
 
 pub const CONFIG_ARG: &str = "config";
 
-pub mod account {
-    pub const ACCOUNT_COMMAND: &str = "account-create";
-    pub const DELETE_COMMAND: &str = "account-delete";
-    pub const PATH_ARG: &str = "path";
-}
+pub const DB_CREATE_COMMAND: &str = "create-db";
+pub const DB_DELETE_COMMAND: &str = "delete-db";
+pub const PATH_ARG: &str = "path";
 
 pub fn build() -> App<'static, 'static> {
     App::new("MoneyRaven")
@@ -19,8 +17,9 @@ pub fn build() -> App<'static, 'static> {
                 .long("config")
                 .help("Allows to specify a custom config file"),
         )
-        .subcommand(SubCommand::with_name(account::ACCOUNT_COMMAND).arg(
-            Arg::with_name(account::PATH_ARG).help("Specifies the path to create the database"),
-        ))
-        .subcommand(SubCommand::with_name(account::DELETE_COMMAND))
+        .subcommand(
+            SubCommand::with_name(DB_CREATE_COMMAND)
+                .arg(Arg::with_name(PATH_ARG).help("Specifies the path to create the database")),
+        )
+        .subcommand(SubCommand::with_name(DB_DELETE_COMMAND))
 }

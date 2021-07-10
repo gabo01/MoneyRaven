@@ -55,12 +55,12 @@ impl From<(&str, Option<&ArgMatches<'_>>)> for Commands {
         let command_string = tuple.0;
         let options = tuple.1;
         match (command_string, options) {
-            (argparser::account::ACCOUNT_COMMAND, Some(opts)) => {
-                let input_val = opts.value_of(argparser::account::PATH_ARG);
+            (argparser::DB_CREATE_COMMAND, Some(opts)) => {
+                let input_val = opts.value_of(argparser::PATH_ARG);
                 let db_path = resolve_path(input_val, platform::DB_PATH);
                 Commands::CreateAccount(db_path)
             }
-            (argparser::account::DELETE_COMMAND, _) => Commands::DeleteAccount,
+            (argparser::DB_DELETE_COMMAND, _) => Commands::DeleteAccount,
             (_, _) => unreachable!(),
         }
     }

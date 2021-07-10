@@ -3,7 +3,7 @@ use std::fmt::{self, Display};
 use std::path::{Path, PathBuf};
 
 pub const CONFIG_PATH: &str = "MoneyRaven/config.toml";
-pub const DB_PATH: &str = "MoneyRaven/account.db";
+pub const DB_PATH: &str = "MoneyRaven/db";
 
 pub fn resolve_path<P: AsRef<Path>>(user_value: Option<&str>, default_relative_path: P) -> PathBuf {
     user_value.map(PathBuf::from).unwrap_or({

@@ -7,6 +7,7 @@ use crate::platform::{self, resolve_path};
 
 pub enum Commands {
     CreateAccount(PathBuf),
+    DeleteAccount,
 }
 
 impl Commands {
@@ -30,6 +31,21 @@ impl Commands {
                         .expect("Unable to delete the recently created database");
                 }
             }
+            Commands::DeleteAccount => match config.get_db_path() {
+                Some(path) => {
+                    match ravenlib::Database::open_or_create(path).map(ravenlib::Database::delete) {
+                        Ok(delete_result) => {
+                            if let Err(_) = delete_result {
+                                eprintln!("Unable to delete the database");
+                            }
+                        }
+                        Err(_) => eprintln!("Unable to open the database"),
+                    }
+                }
+                None => {
+                    eprintln!("The database is already deleted or it was not created");
+                }
+            },
         }
     }
 }
@@ -44,6 +60,7 @@ impl From<(&str, Option<&ArgMatches<'_>>)> for Commands {
                 let db_path = resolve_path(input_val, platform::DB_PATH);
                 Commands::CreateAccount(db_path)
             }
+            (argparser::account::DELETE_COMMAND, _) => Commands::DeleteAccount,
             (_, _) => unreachable!(),
         }
     }

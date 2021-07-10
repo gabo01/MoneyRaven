@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt::{self, Display};
 use std::fs;
 use std::io;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use toml;
 
 use crate::platform::{self, resolve_path};
@@ -43,6 +43,10 @@ impl AppConfig {
             &self.filepath,
             toml::to_string_pretty(&self.config)?,
         )?)
+    }
+
+    pub fn get_db_path(&self) -> Option<&Path> {
+        self.config.dbpath.as_ref().map(PathBuf::as_ref)
     }
 
     pub fn set_db_path<P: Into<PathBuf>>(&mut self, db_path: P) {

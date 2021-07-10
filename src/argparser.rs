@@ -4,6 +4,7 @@ pub const CONFIG_ARG: &str = "config";
 
 pub mod account {
     pub const ACCOUNT_COMMAND: &str = "account-create";
+    pub const DELETE_COMMAND: &str = "account-delete";
     pub const PATH_ARG: &str = "path";
 }
 
@@ -21,4 +22,5 @@ pub fn build() -> App<'static, 'static> {
         .subcommand(SubCommand::with_name(account::ACCOUNT_COMMAND).arg(
             Arg::with_name(account::PATH_ARG).help("Specifies the path to create the database"),
         ))
+        .subcommand(SubCommand::with_name(account::DELETE_COMMAND))
 }

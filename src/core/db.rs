@@ -1,5 +1,6 @@
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use sled::Db as DBHandle;
+use std::fs;
 use std::io;
 use std::marker::PhantomData;
 use std::path::PathBuf;
@@ -22,8 +23,8 @@ impl Database {
         Ok(Self { filepath, handle })
     }
 
-    pub fn delete(&mut self) -> Result<(), ()> {
-        todo!();
+    pub fn delete(self) -> io::Result<()> {
+        fs::remove_dir_all(self.filepath)
     }
 }
 

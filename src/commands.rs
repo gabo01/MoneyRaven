@@ -2,8 +2,8 @@ use clap::ArgMatches;
 use std::path::PathBuf;
 
 use crate::argparser;
-use crate::platform::{self, get_default_path};
 use crate::config::AppConfig;
+use crate::platform::{self, resolve_path};
 
 pub enum Commands {
     CreateAccount(PathBuf),
@@ -36,13 +36,7 @@ impl From<(&str, Option<&ArgMatches<'_>>)> for Commands {
         match (command_string, options) {
             (argparser::account::ACCOUNT_COMMAND, Some(opts)) => {
                 let input_val = opts.value_of(argparser::account::PATH_ARG);
-                let db_path = match get_default_path(input_val, platform::DB_PATH) {
-                    Ok(path) => path,
-                    Err(err) => {
-                        eprintln!("{}", err);
-                        std::process::exit(1);
-                    }
-                };
+                let db_path = resolve_path(input_val, platform::DB_PATH);
                 Commands::CreateAccount(db_path)
             }
             (_, _) => unreachable!(),

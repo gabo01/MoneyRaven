@@ -1,9 +1,21 @@
 use std::env;
 use std::fmt::{self, Display};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 pub const CONFIG_PATH: &str = "MoneyRaven/config.toml";
 pub const DB_PATH: &str = "MoneyRaven/account.db";
+
+pub fn resolve_path<P: AsRef<Path>>(user_value: Option<&str>, default_relative_path: P) -> PathBuf {
+    user_value.map(PathBuf::from).unwrap_or({
+        match get_default_path(default_relative_path) {
+            Ok(path) => path,
+            Err(err) => {
+                eprintln!("{}", err);
+                std::process::exit(1);
+            }
+        }
+    })
+}
 
 pub fn default_data_path() -> Result<String, FetchError> {
     match env::consts::OS {
@@ -18,10 +30,8 @@ pub fn default_data_path() -> Result<String, FetchError> {
     }
 }
 
-pub fn get_default_path(path: Option<&str>, local: &str) -> Result<PathBuf, FetchError> {
-    Ok(path
-        .map(|path| PathBuf::from(path))
-        .unwrap_or(PathBuf::from(default_data_path()?).join(local)))
+fn get_default_path<P: AsRef<Path>>(default_relative_path: P) -> Result<PathBuf, FetchError> {
+    Ok(PathBuf::from(default_data_path()?).join(default_relative_path))
 }
 
 pub enum FetchError {

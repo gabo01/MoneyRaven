@@ -5,17 +5,10 @@ use std::io;
 use std::path::PathBuf;
 use toml;
 
-use crate::platform::{self, get_default_path};
+use crate::platform::{self, resolve_path};
 
 pub fn build(path: Option<&str>) -> AppConfig {
-    let config_path = match get_default_path(path, platform::CONFIG_PATH) {
-        Ok(path) => path,
-        Err(err) => {
-            eprintln!("{}", err);
-            std::process::exit(1);
-        }
-    };
-    match AppConfig::from_file(config_path) {
+    match AppConfig::from_file(resolve_path(path, platform::CONFIG_PATH)) {
         Ok(config) => config,
         Err(err) => {
             eprintln!("{}", err);

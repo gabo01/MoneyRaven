@@ -2,23 +2,24 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use sled::Db as DBHandle;
 use std::io;
 use std::marker::PhantomData;
-use std::path::Path;
+use std::path::PathBuf;
 use uuid::Uuid;
 
 pub struct Database {
+    filepath: PathBuf,
     handle: DBHandle,
 }
 
 impl Database {
-    pub fn create<P: AsRef<Path>>(path: P) -> Result<Self, io::Error> {
-        let path = path.as_ref();
-        let handle = sled::open(path).map_err(|err| {
+    pub fn open_or_create<P: Into<PathBuf>>(path: P) -> Result<Self, io::Error> {
+        let filepath = path.into();
+        let handle = sled::open(&filepath).map_err(|err| {
             match err {
                 sled::Error::Io(err) => err,
                 _ => unreachable!("A non I/O related error was found while creating the database. Such error should not be possible. Please report the incident.")
             }
         })?;
-        Ok(Self { handle })
+        Ok(Self { filepath, handle })
     }
 
     pub fn delete(&mut self) -> Result<(), ()> {

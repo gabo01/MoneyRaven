@@ -13,7 +13,7 @@ impl Commands {
     pub fn run(self, config: &mut AppConfig) {
         match self {
             Commands::CreateAccount(path) => {
-                let mut db = match ravenlib::Database::create(&path) {
+                let mut db = match ravenlib::Database::open_or_create(&path) {
                     Ok(db) => db,
                     Err(_err) => {
                         eprintln!("Unable to create the database");

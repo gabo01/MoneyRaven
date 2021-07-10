@@ -13,7 +13,7 @@ impl Commands {
     pub fn run(self, config: &mut AppConfig) {
         match self {
             Commands::CreateAccount(path) => {
-                let mut db = match ravenlib::Database::open_or_create(&path) {
+                let db = match ravenlib::Database::open_or_create(&path) {
                     Ok(db) => db,
                     Err(_err) => {
                         eprintln!("Unable to create the database");
@@ -26,6 +26,8 @@ impl Commands {
                         "Unable to save the new configuration file. The error found was {}",
                         err
                     );
+                    db.delete()
+                        .expect("Unable to delete the recently created database");
                 }
             }
         }
